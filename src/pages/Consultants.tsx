@@ -331,90 +331,8 @@ export default function Consultants() {
         </div>
       </section>
 
-      {/* Not Logged In - Teaser View */}
-      {!user ? (
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <Card className="max-w-2xl mx-auto text-center">
-              <CardHeader>
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">Register to Browse Consultants</CardTitle>
-                <CardDescription className="text-base">
-                  Create a free account to view consultant profiles and request introductions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="text-left space-y-4">
-                  <h3 className="font-semibold">How it works:</h3>
-                  <div className="grid gap-4">
-                    <div className="flex items-start gap-4 p-4 rounded-lg bg-card border">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="font-semibold text-primary">1</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">Browse</p>
-                        <p className="text-sm text-muted-foreground">View consultant profiles and specialities</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 rounded-lg bg-card border">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="font-semibold text-primary">2</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">Request</p>
-                        <p className="text-sm text-muted-foreground">Send an intro request through Carbon Path</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-4 p-4 rounded-lg bg-card border">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="font-semibold text-primary">3</span>
-                      </div>
-                      <div>
-                        <p className="font-medium">Connect</p>
-                        <p className="text-sm text-muted-foreground">Consultant contacts you directly to discuss your needs</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 space-y-4">
-                  <Button size="lg" asChild className="w-full md:w-auto">
-                    <Link to="/auth">
-                      Register Free <ArrowRight className="w-4 h-4 ml-2" />
-                    </Link>
-                  </Button>
-                  <p className="text-sm text-muted-foreground">
-                    Already have an account?{" "}
-                    <Link to="/auth" className="text-primary hover:underline">Sign in</Link>
-                  </p>
-                </div>
-
-                <div className="pt-6 border-t border-border space-y-4">
-                  <p className="text-sm font-medium">Are you a sustainability consultant?</p>
-                  <Button variant="outline" asChild>
-                    <Link to="/consultant/register">
-                      <Briefcase className="w-4 h-4 mr-2" />
-                      Apply to Join Our Network
-                    </Link>
-                  </Button>
-                </div>
-
-                <div className="pt-4 border-t border-border">
-                  <p className="text-xs text-muted-foreground">
-                    Note: Any services are arranged directly between you and the consultant.
-                    Carbon Path facilitates introductions only.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-      ) : (
-        /* Logged In - Full Consultant List */
-        <>
-          {/* Filters Section */}
+      {/* Filters Section - Always visible */}
+      <>
           <section className="py-6 border-b border-border bg-card/50">
             <div className="container mx-auto px-4">
               <div className="flex flex-wrap gap-3">
@@ -594,7 +512,6 @@ export default function Consultants() {
             </div>
           </section>
         </>
-      )}
 
       {/* Disclaimer */}
       <section className="py-8 border-t border-border bg-card/50">
