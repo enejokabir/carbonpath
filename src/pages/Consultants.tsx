@@ -39,8 +39,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { demoConsultants } from "@/data/realGrantsData";
 
 // Consultant categories with icons
 const categories = [
@@ -156,10 +157,18 @@ export default function Consultants() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Load consultants from Supabase
+  // Load consultants from Supabase or use demo data
   useEffect(() => {
     const loadConsultants = async () => {
       setLoading(true);
+
+      // If Supabase is not configured, use demo data
+      if (!isSupabaseConfigured) {
+        setConsultants(demoConsultants as Consultant[]);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("consultants")
         .select("*")
@@ -169,9 +178,13 @@ export default function Consultants() {
 
       if (error) {
         console.error("Error loading consultants:", error);
-        toast.error("Failed to load consultants");
-      } else if (data) {
+        // Fallback to demo data
+        setConsultants(demoConsultants as Consultant[]);
+      } else if (data && data.length > 0) {
         setConsultants(data as Consultant[]);
+      } else {
+        // No data from Supabase, use demo data
+        setConsultants(demoConsultants as Consultant[]);
       }
       setLoading(false);
     };

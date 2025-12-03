@@ -32,9 +32,10 @@ import {
   Loader2,
   TrendingUp,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { matchGrantsToProfile, matchSubsidiesToProfile, type ExtendedGrant, type Subsidy, type MatchedGrant, type MatchedSubsidy } from "@/lib/matchingService";
+import { realGrants, realSubsidies } from "@/data/realGrantsData";
 
 const regions = ["All Regions", "East Midlands", "Derby City", "UK-wide", "England", "Wales", "Midlands"];
 const types = ["All Types", "Energy Efficiency", "Decarbonisation", "Industrial", "Consultancy", "Transport"];
@@ -113,10 +114,24 @@ export default function Grants() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Load grants from Supabase
+  // Load grants from Supabase or use demo data
   useEffect(() => {
     const loadGrants = async () => {
       setGrantsLoading(true);
+
+      // If Supabase is not configured, use demo data
+      if (!isSupabaseConfigured) {
+        const demoGrants = realGrants.map(g => ({
+          ...g,
+          id: g.id,
+          link: g.application_link,
+        })) as unknown as ExtendedGrant[];
+        const matchedGrants = matchGrantsToProfile(demoGrants, profile, profile?.location);
+        setGrants(matchedGrants);
+        setGrantsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("grants")
         .select("*")
@@ -124,9 +139,25 @@ export default function Grants() {
 
       if (error) {
         console.error("Error loading grants:", error);
-        toast.error("Failed to load grants");
-      } else if (data) {
+        // Fallback to demo data on error
+        const demoGrants = realGrants.map(g => ({
+          ...g,
+          id: g.id,
+          link: g.application_link,
+        })) as unknown as ExtendedGrant[];
+        const matchedGrants = matchGrantsToProfile(demoGrants, profile, profile?.location);
+        setGrants(matchedGrants);
+      } else if (data && data.length > 0) {
         const matchedGrants = matchGrantsToProfile(data as ExtendedGrant[], profile, profile?.location);
+        setGrants(matchedGrants);
+      } else {
+        // No data from Supabase, use demo data
+        const demoGrants = realGrants.map(g => ({
+          ...g,
+          id: g.id,
+          link: g.application_link,
+        })) as unknown as ExtendedGrant[];
+        const matchedGrants = matchGrantsToProfile(demoGrants, profile, profile?.location);
         setGrants(matchedGrants);
       }
       setGrantsLoading(false);
@@ -135,10 +166,23 @@ export default function Grants() {
     loadGrants();
   }, [profile]);
 
-  // Load subsidies from Supabase
+  // Load subsidies from Supabase or use demo data
   useEffect(() => {
     const loadSubsidies = async () => {
       setSubsidiesLoading(true);
+
+      // If Supabase is not configured, use demo data
+      if (!isSupabaseConfigured) {
+        const demoSubsidies = realSubsidies.map(s => ({
+          ...s,
+          id: s.id,
+        })) as unknown as Subsidy[];
+        const matchedSubsidies = matchSubsidiesToProfile(demoSubsidies, profile, profile?.employees);
+        setSubsidies(matchedSubsidies);
+        setSubsidiesLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("subsidies")
         .select("*")
@@ -147,9 +191,23 @@ export default function Grants() {
 
       if (error) {
         console.error("Error loading subsidies:", error);
-        toast.error("Failed to load subsidies");
-      } else if (data) {
+        // Fallback to demo data
+        const demoSubsidies = realSubsidies.map(s => ({
+          ...s,
+          id: s.id,
+        })) as unknown as Subsidy[];
+        const matchedSubsidies = matchSubsidiesToProfile(demoSubsidies, profile, profile?.employees);
+        setSubsidies(matchedSubsidies);
+      } else if (data && data.length > 0) {
         const matchedSubsidies = matchSubsidiesToProfile(data as Subsidy[], profile, profile?.employees);
+        setSubsidies(matchedSubsidies);
+      } else {
+        // No data from Supabase, use demo data
+        const demoSubsidies = realSubsidies.map(s => ({
+          ...s,
+          id: s.id,
+        })) as unknown as Subsidy[];
+        const matchedSubsidies = matchSubsidiesToProfile(demoSubsidies, profile, profile?.employees);
         setSubsidies(matchedSubsidies);
       }
       setSubsidiesLoading(false);

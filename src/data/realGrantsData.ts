@@ -534,6 +534,109 @@ export const industryEmissionFactors = {
   }
 };
 
+// Demo consultants data
+export interface DemoConsultant {
+  id: string;
+  name: string;
+  specialty: string;
+  region: string;
+  contact_email: string;
+  contact_phone: string | null;
+  bio: string;
+  expertise_areas: string[];
+  status: string;
+  verified: boolean;
+  fee_type: string;
+  years_experience: number;
+}
+
+export const demoConsultants: DemoConsultant[] = [
+  {
+    id: "consultant-1",
+    name: "Sarah Mitchell",
+    specialty: "Carbon Reporting & Strategy",
+    region: "UK-wide (remote)",
+    contact_email: "sarah@carbonpath-demo.com",
+    contact_phone: null,
+    bio: "Former sustainability director at a FTSE 100 company with 15+ years helping SMEs measure, report, and reduce their carbon footprint. Specialist in SECR compliance and science-based targets.",
+    expertise_areas: ["carbon_reporting", "strategy", "grant_applications"],
+    status: "approved",
+    verified: true,
+    fee_type: "Day rate",
+    years_experience: 15
+  },
+  {
+    id: "consultant-2",
+    name: "James Wilson",
+    specialty: "Energy Audits & Retrofit",
+    region: "East Midlands",
+    contact_email: "james@carbonpath-demo.com",
+    contact_phone: "+44 115 XXX XXXX",
+    bio: "Certified energy assessor helping manufacturing and industrial businesses reduce energy costs by 20-40%. Expert in heat pumps, solar PV, and building insulation solutions.",
+    expertise_areas: ["energy_audits", "retrofit"],
+    status: "approved",
+    verified: true,
+    fee_type: "Fixed project fee",
+    years_experience: 12
+  },
+  {
+    id: "consultant-3",
+    name: "Emma Thompson",
+    specialty: "Grant Applications",
+    region: "Midlands",
+    contact_email: "emma@carbonpath-demo.com",
+    contact_phone: null,
+    bio: "Grant writing specialist with an 85% success rate. Helped clients secure over £2.5m in sustainability grants including IETF, Innovate UK, and regional funding schemes.",
+    expertise_areas: ["grant_applications", "carbon_reporting"],
+    status: "approved",
+    verified: true,
+    fee_type: "Success fee",
+    years_experience: 8
+  },
+  {
+    id: "consultant-4",
+    name: "David Chen",
+    specialty: "Tax Relief & Capital Allowances",
+    region: "UK-wide",
+    contact_email: "david@carbonpath-demo.com",
+    contact_phone: "+44 20 XXX XXXX",
+    bio: "Chartered accountant specialising in green tax incentives. Helped businesses claim over £5m in R&D tax credits and capital allowances for sustainability investments.",
+    expertise_areas: ["tax_specialists"],
+    status: "approved",
+    verified: true,
+    fee_type: "Hourly rate",
+    years_experience: 18
+  },
+  {
+    id: "consultant-5",
+    name: "Rachel Green",
+    specialty: "Net Zero Strategy",
+    region: "London & South East",
+    contact_email: "rachel@carbonpath-demo.com",
+    contact_phone: null,
+    bio: "Former head of sustainability at a leading retailer. Now helping SMEs develop practical, cost-effective Net Zero roadmaps aligned with the UK's 2050 targets.",
+    expertise_areas: ["strategy", "carbon_reporting", "energy_audits"],
+    status: "approved",
+    verified: true,
+    fee_type: "Monthly retainer",
+    years_experience: 14
+  },
+  {
+    id: "consultant-6",
+    name: "Michael O'Brien",
+    specialty: "Solar & EV Installation",
+    region: "North West",
+    contact_email: "michael@carbonpath-demo.com",
+    contact_phone: "+44 161 XXX XXXX",
+    bio: "MCS-certified renewable energy installer with 10 years experience. Specialises in commercial solar PV, battery storage, and workplace EV charging infrastructure.",
+    expertise_areas: ["retrofit", "energy_audits"],
+    status: "approved",
+    verified: true,
+    fee_type: "Fixed project fee",
+    years_experience: 10
+  }
+];
+
 // Common questions for all industries (Scope 1, 2, and basic Scope 3)
 export const commonEmissionQuestions = {
   scope1: [
