@@ -134,26 +134,26 @@ export default function Index() {
               </div>
             </FadeIn>
 
-            {/* Stats */}
+            {/* Features */}
             <FadeIn delay={0.5}>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto pt-12">
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
-                    <AnimatedCounter value={50} suffix="+" duration={1.5} />
+                    Free
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Matched Grants</p>
+                  <p className="text-sm text-muted-foreground mt-1">Readiness Assessment</p>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
-                    <AnimatedCounter value={20} suffix="+" duration={1.5} />
+                    UK
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Vetted Consultants</p>
+                  <p className="text-sm text-muted-foreground mt-1">Grants & Funding</p>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
-                    <AnimatedCounter value={5} suffix=" min" duration={1.5} />
+                    Expert
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Readiness Check</p>
+                  <p className="text-sm text-muted-foreground mt-1">Consultant Network</p>
                 </div>
               </div>
             </FadeIn>
