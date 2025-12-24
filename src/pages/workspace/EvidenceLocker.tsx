@@ -20,6 +20,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Upload,
   Search,
   FileText,
@@ -33,6 +50,7 @@ import {
   Trash2,
   Eye,
   Calendar,
+  Pencil,
 } from "lucide-react";
 
 const EVIDENCE_CATEGORIES = [
@@ -78,6 +96,19 @@ export default function EvidenceLocker() {
   const [uploadDescription, setUploadDescription] = useState("");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadValidUntil, setUploadValidUntil] = useState("");
+
+  // View/Edit/Delete state
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedEvidence, setSelectedEvidence] = useState<EvidenceItem | null>(null);
+
+  // Edit form state
+  const [editTitle, setEditTitle] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editValidUntil, setEditValidUntil] = useState("");
+  const [editStatus, setEditStatus] = useState("");
 
   useEffect(() => {
     const loadEvidence = async () => {
@@ -261,6 +292,152 @@ export default function EvidenceLocker() {
       toast.error("Error uploading: " + error.message);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleViewEvidence = (item: EvidenceItem) => {
+    setSelectedEvidence(item);
+    setViewDialogOpen(true);
+  };
+
+  const handleEditEvidence = (item: EvidenceItem) => {
+    setSelectedEvidence(item);
+    setEditTitle(item.title);
+    setEditCategory(item.category);
+    setEditDescription(item.description || "");
+    setEditValidUntil(item.valid_until || "");
+    setEditStatus(item.status);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedEvidence || !editTitle || !editCategory) {
+      toast.error("Please fill in title and category");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const demoWorkspaceData = localStorage.getItem("demo_workspace");
+
+      if (demoWorkspaceData) {
+        const updatedEvidence = evidence.map(e =>
+          e.id === selectedEvidence.id
+            ? {
+                ...e,
+                title: editTitle,
+                category: editCategory,
+                description: editDescription || null,
+                valid_until: editValidUntil || null,
+                status: editStatus,
+              }
+            : e
+        );
+
+        setEvidence(updatedEvidence);
+        localStorage.setItem("demo_evidence_items", JSON.stringify(updatedEvidence));
+        toast.success("Evidence updated");
+        setEditDialogOpen(false);
+        setSelectedEvidence(null);
+        setUploading(false);
+        return;
+      }
+
+      // Supabase mode
+      const { error } = await supabase
+        .from("evidence_items")
+        .update({
+          title: editTitle,
+          category: editCategory,
+          description: editDescription || null,
+          valid_until: editValidUntil || null,
+          status: editStatus,
+        })
+        .eq("id", selectedEvidence.id);
+
+      if (error) throw error;
+
+      setEvidence(evidence.map(e =>
+        e.id === selectedEvidence.id
+          ? {
+              ...e,
+              title: editTitle,
+              category: editCategory,
+              description: editDescription || null,
+              valid_until: editValidUntil || null,
+              status: editStatus,
+            }
+          : e
+      ));
+
+      toast.success("Evidence updated");
+      setEditDialogOpen(false);
+      setSelectedEvidence(null);
+    } catch (error: any) {
+      toast.error("Error updating: " + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDownload = (item: EvidenceItem) => {
+    // For demo mode, show a message since we don't have actual files
+    const demoWorkspaceData = localStorage.getItem("demo_workspace");
+    if (demoWorkspaceData) {
+      toast.info(`In demo mode: "${item.file_name}" would download here. In production, this downloads the actual file.`);
+      return;
+    }
+
+    // For Supabase mode, get signed URL and download
+    if (item.file_name) {
+      // In production, this would use supabase.storage.from('evidence').download()
+      toast.success(`Downloading ${item.file_name}...`);
+    }
+  };
+
+  const handleDeleteEvidence = async () => {
+    if (!selectedEvidence) return;
+
+    try {
+      const demoWorkspaceData = localStorage.getItem("demo_workspace");
+
+      if (demoWorkspaceData) {
+        const updatedEvidence = evidence.filter(e => e.id !== selectedEvidence.id);
+        setEvidence(updatedEvidence);
+        localStorage.setItem("demo_evidence_items", JSON.stringify(updatedEvidence));
+
+        // Update readiness score
+        const demoScoreData = localStorage.getItem("demo_readiness_score");
+        if (demoScoreData) {
+          const score = JSON.parse(demoScoreData);
+          score.total_evidence_items = updatedEvidence.length;
+          score.current_evidence_items = updatedEvidence.filter(e => e.status === "current").length;
+          score.expiring_evidence_items = updatedEvidence.filter(e => e.status === "expiring_soon").length;
+          score.expired_evidence_items = updatedEvidence.filter(e => e.status === "expired").length;
+          localStorage.setItem("demo_readiness_score", JSON.stringify(score));
+        }
+
+        toast.success("Evidence deleted");
+        setDeleteDialogOpen(false);
+        setSelectedEvidence(null);
+        return;
+      }
+
+      // Supabase mode - delete file from storage first if exists
+      // Then delete record
+      const { error } = await supabase
+        .from("evidence_items")
+        .delete()
+        .eq("id", selectedEvidence.id);
+
+      if (error) throw error;
+
+      setEvidence(evidence.filter(e => e.id !== selectedEvidence.id));
+      toast.success("Evidence deleted");
+      setDeleteDialogOpen(false);
+      setSelectedEvidence(null);
+    } catch (error: any) {
+      toast.error("Error deleting: " + error.message);
     }
   };
 
@@ -512,22 +689,234 @@ export default function EvidenceLocker() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {item.file_name && (
-                        <Button variant="ghost" size="icon">
-                          <Download className="w-4 h-4" />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreVertical className="w-4 h-4" />
                         </Button>
-                      )}
-                      <Button variant="ghost" size="icon">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleViewEvidence(item)}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Details
+                        </DropdownMenuItem>
+                        {item.file_name && (
+                          <DropdownMenuItem onClick={() => handleDownload(item)}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => handleEditEvidence(item)}>
+                          <Pencil className="w-4 h-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setSelectedEvidence(item);
+                            setDeleteDialogOpen(true);
+                          }}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
+
+      {/* View Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Evidence Details</DialogTitle>
+          </DialogHeader>
+          {selectedEvidence && (
+            <div className="space-y-4 py-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-muted rounded-lg">
+                  {getStatusIcon(selectedEvidence.status)}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">{selectedEvidence.title}</h3>
+                  <p className="text-sm text-muted-foreground">{getCategoryLabel(selectedEvidence.category)}</p>
+                </div>
+                {getStatusBadge(selectedEvidence.status)}
+              </div>
+
+              {selectedEvidence.description && (
+                <div>
+                  <Label className="text-muted-foreground text-xs">Description</Label>
+                  <p className="text-sm mt-1">{selectedEvidence.description}</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                {selectedEvidence.file_name && (
+                  <div>
+                    <Label className="text-muted-foreground text-xs">File</Label>
+                    <p className="text-sm mt-1 flex items-center gap-1">
+                      <FileText className="w-3 h-3" />
+                      {selectedEvidence.file_name}
+                    </p>
+                  </div>
+                )}
+                {selectedEvidence.document_date && (
+                  <div>
+                    <Label className="text-muted-foreground text-xs">Document Date</Label>
+                    <p className="text-sm mt-1">{new Date(selectedEvidence.document_date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {selectedEvidence.valid_until && (
+                  <div>
+                    <Label className="text-muted-foreground text-xs">Valid Until</Label>
+                    <p className="text-sm mt-1">{new Date(selectedEvidence.valid_until).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}</p>
+                  </div>
+                )}
+                <div>
+                  <Label className="text-muted-foreground text-xs">Uploaded</Label>
+                  <p className="text-sm mt-1">{new Date(selectedEvidence.created_at).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="flex justify-end gap-2">
+            {selectedEvidence?.file_name && (
+              <Button variant="outline" onClick={() => selectedEvidence && handleDownload(selectedEvidence)}>
+                <Download className="w-4 h-4 mr-2" />
+                Download
+              </Button>
+            )}
+            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+            <Button onClick={() => {
+              setViewDialogOpen(false);
+              if (selectedEvidence) handleEditEvidence(selectedEvidence);
+            }}>
+              Edit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Evidence</DialogTitle>
+            <DialogDescription>
+              Update this evidence item
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="edit-title">Title *</Label>
+              <Input
+                id="edit-title"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-category">Category *</Label>
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {EVIDENCE_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="edit-description">Description</Label>
+              <Textarea
+                id="edit-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-validUntil">Valid Until</Label>
+              <Input
+                id="edit-validUntil"
+                type="date"
+                value={editValidUntil}
+                onChange={(e) => setEditValidUntil(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-status">Status</Label>
+              <Select value={editStatus} onValueChange={setEditStatus}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="current">Current</SelectItem>
+                  <SelectItem value="expiring_soon">Expiring Soon</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                  <SelectItem value="needs_review">Needs Review</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit} disabled={uploading}>
+              {uploading ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Evidence</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{selectedEvidence?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteEvidence}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </WorkspaceLayout>
   );
 }
