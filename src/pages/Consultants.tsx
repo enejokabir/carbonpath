@@ -42,6 +42,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { demoConsultants } from "@/data/realGrantsData";
+import { TeaserGate, BlurredCard } from "@/components/ui/TeaserGate";
+
+const PUBLIC_PREVIEW_COUNT = 2;
 
 // Consultant categories with icons
 const categories = [
@@ -78,7 +81,7 @@ const categories = [
   {
     id: "strategy",
     name: "Strategy Consultants",
-    description: "Develop your Net Zero roadmap",
+    description: "Develop your compliance roadmap",
     icon: Target
   }
 ];
@@ -291,9 +294,10 @@ export default function Consultants() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-mint-fresh/5" />
         <div className="container mx-auto px-4 py-16 relative">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Find a Consultant</h1>
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">Vetted & Verified</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Vetted Compliance Consultants</h1>
             <p className="text-xl text-muted-foreground">
-              Connect with trusted experts to guide your sustainability journey
+              Connect with pre-screened experts for tax relief, grant applications, and full sustainability compliance support
             </p>
           </div>
         </div>
@@ -384,90 +388,131 @@ export default function Consultants() {
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredConsultants.map((consultant) => (
-                    <Card key={consultant.id} className="border hover:border-primary/50 transition-all hover:shadow-elevated">
-                      <CardHeader>
-                        <div className="flex items-start gap-4">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-mint-fresh/20 flex items-center justify-center shrink-0">
-                            <Users className="w-7 h-7 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <CardTitle className="text-lg truncate">{consultant.name}</CardTitle>
-                                {consultant.verified && (
-                                  <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
-                                )}
+                <>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Show all consultants for logged-in users, or first 2 for guests */}
+                    {(user ? filteredConsultants : filteredConsultants.slice(0, PUBLIC_PREVIEW_COUNT)).map((consultant) => (
+                      <Card key={consultant.id} className="border hover:border-primary/50 transition-all hover:shadow-elevated">
+                        <CardHeader>
+                          <div className="flex items-start gap-4">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-mint-fresh/20 flex items-center justify-center shrink-0">
+                              <Users className="w-7 h-7 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <CardTitle className="text-lg truncate">{consultant.name}</CardTitle>
+                                  {consultant.verified && (
+                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                                  )}
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="shrink-0 -mr-2"
+                                  onClick={(e) => toggleSaveConsultant(consultant.id, e)}
+                                >
+                                  {isConsultantSaved(consultant.id) ? (
+                                    <BookmarkCheck className="w-5 h-5 text-primary" />
+                                  ) : (
+                                    <Bookmark className="w-5 h-5" />
+                                  )}
+                                </Button>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="shrink-0 -mr-2"
-                                onClick={(e) => toggleSaveConsultant(consultant.id, e)}
-                              >
-                                {isConsultantSaved(consultant.id) ? (
-                                  <BookmarkCheck className="w-5 h-5 text-primary" />
-                                ) : (
-                                  <Bookmark className="w-5 h-5" />
-                                )}
-                              </Button>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {getSpecialties(consultant).slice(0, 3).map((specialty) => (
-                                <Badge key={specialty} variant="secondary" className="text-xs">
-                                  {specialty}
-                                </Badge>
-                              ))}
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {getSpecialties(consultant).slice(0, 3).map((specialty) => (
+                                  <Badge key={specialty} variant="secondary" className="text-xs">
+                                    {specialty}
+                                  </Badge>
+                                ))}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <MapPin className="w-4 h-4" />
-                          {consultant.region}
-                        </div>
-                        <p className="text-sm line-clamp-3">{consultant.bio || "Sustainability consultant"}</p>
-                        {consultant.fee_type && (
-                          <div className="text-sm">
-                            <span className="font-medium">Fee: </span>
-                            <span className="text-muted-foreground">{consultant.fee_type}</span>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <MapPin className="w-4 h-4" />
+                            {consultant.region}
                           </div>
-                        )}
-                        {consultant.years_experience && (
-                          <div className="text-sm text-muted-foreground">
-                            {consultant.years_experience}+ years experience
+                          <p className="text-sm line-clamp-3">{consultant.bio || "Sustainability consultant"}</p>
+                          {consultant.fee_type && (
+                            <div className="text-sm">
+                              <span className="font-medium">Fee: </span>
+                              <span className="text-muted-foreground">{consultant.fee_type}</span>
+                            </div>
+                          )}
+                          {consultant.years_experience && (
+                            <div className="text-sm text-muted-foreground">
+                              {consultant.years_experience}+ years experience
+                            </div>
+                          )}
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              variant={isConsultantSaved(consultant.id) ? "secondary" : "outline"}
+                              size="sm"
+                              className="flex-1"
+                              onClick={(e) => toggleSaveConsultant(consultant.id, e)}
+                            >
+                              {isConsultantSaved(consultant.id) ? (
+                                <>
+                                  <BookmarkCheck className="w-4 h-4 mr-1" />
+                                  Saved
+                                </>
+                              ) : (
+                                <>
+                                  <Bookmark className="w-4 h-4 mr-1" />
+                                  Save
+                                </>
+                              )}
+                            </Button>
+                            <Button size="sm" className="flex-1" onClick={(e) => openIntroDialog(consultant, e)}>
+                              <Mail className="w-4 h-4 mr-1" />
+                              Request Intro
+                            </Button>
                           </div>
-                        )}
-                        <div className="flex gap-2 pt-2">
-                          <Button
-                            variant={isConsultantSaved(consultant.id) ? "secondary" : "outline"}
-                            size="sm"
-                            className="flex-1"
-                            onClick={(e) => toggleSaveConsultant(consultant.id, e)}
-                          >
-                            {isConsultantSaved(consultant.id) ? (
-                              <>
-                                <BookmarkCheck className="w-4 h-4 mr-1" />
-                                Saved
-                              </>
-                            ) : (
-                              <>
-                                <Bookmark className="w-4 h-4 mr-1" />
-                                Save
-                              </>
-                            )}
-                          </Button>
-                          <Button size="sm" className="flex-1" onClick={(e) => openIntroDialog(consultant, e)}>
-                            <Mail className="w-4 h-4 mr-1" />
-                            Request Intro
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+
+                    {/* Show blurred preview cards for non-logged-in users */}
+                    {!user && filteredConsultants.length > PUBLIC_PREVIEW_COUNT && (
+                      <BlurredCard>
+                        <Card className="border">
+                          <CardHeader>
+                            <div className="flex items-start gap-4">
+                              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-mint-fresh/20 flex items-center justify-center shrink-0">
+                                <Users className="w-7 h-7 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <CardTitle className="text-lg">Expert Consultant</CardTitle>
+                                <div className="flex gap-1 mt-2">
+                                  <Badge variant="secondary" className="text-xs">Specialty</Badge>
+                                </div>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <MapPin className="w-4 h-4" />
+                              Region
+                            </div>
+                            <p className="text-sm">Experienced sustainability consultant ready to help your business.</p>
+                          </CardContent>
+                        </Card>
+                      </BlurredCard>
+                    )}
+                  </div>
+
+                  {/* Teaser gate for non-logged-in users */}
+                  {!user && filteredConsultants.length > PUBLIC_PREVIEW_COUNT && (
+                    <div className="mt-6">
+                      <TeaserGate
+                        type="consultants"
+                        hiddenCount={filteredConsultants.length - PUBLIC_PREVIEW_COUNT}
+                      />
+                    </div>
+                  )}
+                </>
               )}
 
               {!loading && filteredConsultants.length === 0 && (
@@ -518,9 +563,9 @@ export default function Consultants() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <p className="text-sm text-muted-foreground">
-              <strong>Disclaimer:</strong> Consultants are independent professionals.
-              Any engagement is directly between you and the consultant.
-              Carbon Path is not responsible for the quality or outcome of their services.
+              <strong>Note:</strong> All consultants are vetted by Carbon Path before being listed.
+              Engagements are directly between you and the consultant under transparent terms.
+              Carbon Path does not provide regulated advice, audits, or certifications.
             </p>
           </div>
         </div>

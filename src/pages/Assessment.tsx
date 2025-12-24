@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import {
-  Leaf,
   ArrowRight,
   ArrowLeft,
   Building2,
@@ -43,13 +42,13 @@ const sectors = [
 
 const barriers = [
   { id: "cost", label: "Cost or lack of funding" },
-  { id: "knowledge", label: "Limited technical knowledge" },
-  { id: "data", label: "Difficulty gathering accurate data" },
+  { id: "knowledge", label: "Don't know what documents are needed" },
+  { id: "data", label: "Difficulty gathering evidence" },
   { id: "time", label: "Limited staff time" },
-  { id: "pressure", label: "No regulatory pressure" },
+  { id: "pressure", label: "No customer or supply chain pressure yet" },
   { id: "roi", label: "Uncertain return on investment" },
   { id: "grants", label: "Not aware of available grants" },
-  { id: "trust", label: "Hard to find trusted suppliers or consultants" }
+  { id: "trust", label: "Hard to find trusted consultants" }
 ];
 
 const consultantTypes = [
@@ -61,10 +60,10 @@ const consultantTypes = [
 ];
 
 const featureRatings = [
-  { id: "energy_tracking", label: "A simple tool to track energy use and carbon emissions" },
-  { id: "benchmarking", label: "Benchmarking against similar businesses in your sector" },
+  { id: "evidence_locker", label: "A secure place to store and organise compliance documents" },
+  { id: "readiness_score", label: "A readiness score showing how prepared you are" },
   { id: "grant_matching", label: "Matching to grants, subsidies and funding" },
-  { id: "consultant_access", label: "Access to vetted consultants for applications" },
+  { id: "consultant_access", label: "Access to vetted consultants for compliance support" },
   { id: "tax_info", label: "Information on tax incentives for sustainability" }
 ];
 
@@ -155,8 +154,11 @@ export default function Assessment() {
     setIsSubmitting(true);
 
     try {
-      // In a real app, save to database here
-      console.log("Assessment data:", formData);
+      // Save assessment data to localStorage for retrieval
+      localStorage.setItem("assessment_completed", JSON.stringify({
+        ...formData,
+        completed_at: new Date().toISOString(),
+      }));
 
       toast.success("Assessment completed!");
 
@@ -181,7 +183,7 @@ export default function Assessment() {
       <header className="border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <Leaf className="w-6 h-6 text-primary" />
+            <img src="/logo.png" alt="Carbon Path" className="w-6 h-6 object-contain" />
             <span className="font-semibold text-lg">Carbon Path</span>
           </Link>
           <Button variant="ghost" size="sm" asChild>
@@ -278,26 +280,26 @@ export default function Assessment() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Do you currently measure carbon emissions or energy use?</Label>
+                    <Label>Do you have sustainability documentation in place?</Label>
                     <RadioGroup
                       value={formData.trackingStatus}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, trackingStatus: value }))}
                     >
                       <div className="flex items-center space-x-2 p-3 rounded-lg border hover:border-primary/50 transition-colors">
                         <RadioGroupItem value="comprehensive" id="comprehensive" />
-                        <Label htmlFor="comprehensive" className="flex-1 cursor-pointer">Yes, comprehensively</Label>
+                        <Label htmlFor="comprehensive" className="flex-1 cursor-pointer">Yes, well organised</Label>
                       </div>
                       <div className="flex items-center space-x-2 p-3 rounded-lg border hover:border-primary/50 transition-colors">
                         <RadioGroupItem value="partial" id="partial" />
-                        <Label htmlFor="partial" className="flex-1 cursor-pointer">Yes, partially (e.g. electricity or heating only)</Label>
+                        <Label htmlFor="partial" className="flex-1 cursor-pointer">Yes, but scattered across files</Label>
                       </div>
                       <div className="flex items-center space-x-2 p-3 rounded-lg border hover:border-primary/50 transition-colors">
                         <RadioGroupItem value="planning" id="planning" />
-                        <Label htmlFor="planning" className="flex-1 cursor-pointer">No, but planning to</Label>
+                        <Label htmlFor="planning" className="flex-1 cursor-pointer">No, but planning to start</Label>
                       </div>
                       <div className="flex items-center space-x-2 p-3 rounded-lg border hover:border-primary/50 transition-colors">
                         <RadioGroupItem value="no" id="no" />
-                        <Label htmlFor="no" className="flex-1 cursor-pointer">No, not a priority</Label>
+                        <Label htmlFor="no" className="flex-1 cursor-pointer">No, not sure what's needed</Label>
                       </div>
                     </RadioGroup>
                   </div>
@@ -322,7 +324,7 @@ export default function Assessment() {
               <Card>
                 <CardContent className="pt-6 space-y-6">
                   <div className="space-y-3">
-                    <Label>What barriers do you face in reducing emissions or improving energy efficiency?</Label>
+                    <Label>What barriers do you face in becoming sustainability compliant?</Label>
                     <p className="text-sm text-muted-foreground">Select all that apply</p>
                     <div className="space-y-2">
                       {barriers.map((barrier) => (
@@ -345,7 +347,7 @@ export default function Assessment() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Are you aware of any local grants for energy efficiency or decarbonisation?</Label>
+                    <Label>Are you aware of any grants for sustainability or compliance improvements?</Label>
                     <RadioGroup
                       value={formData.grantAwareness}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, grantAwareness: value }))}

@@ -27,9 +27,9 @@ import { supabase } from "@/lib/supabase";
 const articles = {
   basics: [
     {
-      slug: "what-is-net-zero",
-      title: "What is Net Zero?",
-      description: "A plain-English explanation of what Net Zero means and why it exists",
+      slug: "what-is-sustainability-compliance",
+      title: "What is Sustainability Compliance?",
+      description: "A plain-English explanation of what compliance means and why it matters",
       readTime: "3 min",
       icon: Lightbulb
     },
@@ -41,25 +41,25 @@ const articles = {
       icon: Building2
     },
     {
-      slug: "carbon-footprint-explained",
-      title: "Carbon Footprint Explained",
-      description: "What it is, how it's measured, and what yours might look like",
+      slug: "evidence-locker-explained",
+      title: "Building Your Evidence Locker",
+      description: "What documents you need and how to organise them effectively",
       readTime: "5 min",
       icon: Leaf
     },
     {
-      slug: "scope-1-2-3-simplified",
-      title: "Scope 1, 2, 3 Simplified",
-      description: "The different types of emissions and which ones you can actually control",
+      slug: "compliance-checklist",
+      title: "Your Compliance Checklist",
+      description: "Key documents and certifications for sustainability readiness",
       readTime: "4 min",
       icon: BookOpen
     }
   ],
   policy: [
     {
-      slug: "uk-net-zero-targets",
-      title: "Government Net Zero Targets",
-      description: "2030, 2050 and what they mean for UK businesses",
+      slug: "uk-sustainability-regulations",
+      title: "UK Sustainability Regulations",
+      description: "Current requirements and what they mean for UK businesses",
       readTime: "4 min",
       icon: Scale
     },
@@ -139,7 +139,7 @@ export default function Learn() {
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Learn</h1>
             <p className="text-xl text-muted-foreground">
-              Everything UK SMEs need to know about Net Zero — in plain English
+              Everything UK SMEs need to know about sustainability compliance — in plain English
             </p>
           </div>
         </div>
@@ -153,19 +153,19 @@ export default function Learn() {
               href="#basics"
               className="px-4 py-2 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors"
             >
-              Net Zero Basics
+              Compliance Basics
             </a>
             <a
               href="#policy"
               className="px-4 py-2 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors"
             >
-              UK Policy Landscape
+              UK Regulations
             </a>
             <a
               href="#financial"
               className="px-4 py-2 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors"
             >
-              Financial Opportunities
+              Funding & Grants
             </a>
             <a
               href="#sectors"
@@ -177,13 +177,13 @@ export default function Learn() {
         </div>
       </section>
 
-      {/* Net Zero Basics Section */}
+      {/* Compliance Basics Section */}
       <section id="basics" className="py-16">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold">Net Zero Basics</h2>
-              <p className="text-muted-foreground mt-1">Start here if you're new to sustainability</p>
+              <h2 className="text-2xl md:text-3xl font-bold">Compliance Basics</h2>
+              <p className="text-muted-foreground mt-1">Start here if you're new to sustainability compliance</p>
             </div>
             <Link
               to="/learn/basics"

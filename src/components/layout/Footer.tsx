@@ -1,102 +1,103 @@
 import { Link } from "react-router-dom";
-import { Leaf } from "lucide-react";
 
 export const Footer = () => {
+  const linkClass = "hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm";
+
   return (
-    <footer className="border-t border-border py-12 bg-card/50">
+    <footer className="border-t border-border py-12 bg-card/50" role="contentinfo">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <Leaf className="w-6 h-6 text-primary" />
+          <div className="sm:col-span-2 md:col-span-1">
+            <Link to="/" className="flex items-center gap-2 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
+              <img src="/logo.png" alt="" className="w-6 h-6 object-contain" aria-hidden="true" />
               <span className="font-semibold text-lg">Carbon Path</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Helping UK SMEs navigate Net Zero with grants, guidance, and expert support.
+              Helping UK SMEs become sustainability ready with compliance tools, grants, and expert support.
             </p>
           </div>
 
           {/* Learn */}
-          <div>
+          <nav aria-label="Learn resources">
             <h4 className="font-semibold mb-4">Learn</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-muted-foreground" role="list">
               <li>
-                <Link to="/learn/what-is-net-zero" className="hover:text-primary transition-colors">
-                  What is Net Zero?
+                <Link to="/learn/what-is-sustainability-compliance" className={linkClass}>
+                  What is Compliance?
                 </Link>
               </li>
               <li>
-                <Link to="/learn/uk-net-zero-targets" className="hover:text-primary transition-colors">
-                  UK Policy & Targets
+                <Link to="/learn/uk-sustainability-regulations" className={linkClass}>
+                  UK Regulations
                 </Link>
               </li>
               <li>
-                <Link to="/learn/carbon-footprint-explained" className="hover:text-primary transition-colors">
-                  Carbon Footprint Explained
+                <Link to="/learn/evidence-locker-explained" className={linkClass}>
+                  Building Your Evidence Locker
                 </Link>
               </li>
               <li>
-                <Link to="/learn/tax-incentives-overview" className="hover:text-primary transition-colors">
+                <Link to="/learn/tax-incentives-overview" className={linkClass}>
                   Tax Incentives
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Resources */}
-          <div>
+          <nav aria-label="Resources">
             <h4 className="font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-muted-foreground" role="list">
               <li>
-                <Link to="/grants" className="hover:text-primary transition-colors">
+                <Link to="/grants" className={linkClass}>
                   Browse Grants
                 </Link>
               </li>
               <li>
-                <Link to="/consultants" className="hover:text-primary transition-colors">
+                <Link to="/consultants" className={linkClass}>
                   Find Consultants
                 </Link>
               </li>
               <li>
-                <Link to="/assessment" className="hover:text-primary transition-colors">
+                <Link to="/assessment" className={linkClass}>
                   Take Assessment
                 </Link>
               </li>
               <li>
-                <Link to="/tax-benefits" className="hover:text-primary transition-colors">
+                <Link to="/tax-benefits" className={linkClass}>
                   Tax Benefits Guide
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Company */}
-          <div>
+          <nav aria-label="Company information">
             <h4 className="font-semibold mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-muted-foreground" role="list">
               <li>
-                <Link to="/about" className="hover:text-primary transition-colors">
+                <Link to="/about" className={linkClass}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-primary transition-colors">
+                <Link to="/contact" className={linkClass}>
                   Contact
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-primary transition-colors">
+                <Link to="/privacy" className={linkClass}>
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-primary transition-colors">
+                <Link to="/terms" className={linkClass}>
                   Terms of Service
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
         </div>
 
         <div className="pt-8 border-t border-border">

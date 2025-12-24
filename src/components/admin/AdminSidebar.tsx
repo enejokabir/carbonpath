@@ -7,7 +7,7 @@ import {
   Users,
   Settings,
   LogOut,
-  Leaf,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,9 +34,11 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-slate-700">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-sage rounded-lg flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-white" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Carbon Path"
+            className="w-8 h-8 object-contain"
+          />
           <span className="font-bold text-lg">Carbon Path</span>
         </Link>
         <p className="text-xs text-slate-400 mt-1">Admin Portal</p>
@@ -74,7 +76,7 @@ export function AdminSidebar() {
       <div className="p-4 border-t border-slate-700 space-y-2">
         <Link to="/">
           <Button variant="ghost" className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800">
-            <Leaf className="w-5 h-5 mr-3" />
+            <ArrowLeft className="w-5 h-5 mr-3" />
             Back to Site
           </Button>
         </Link>

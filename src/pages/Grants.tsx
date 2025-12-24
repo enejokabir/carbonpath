@@ -36,6 +36,9 @@ import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { matchGrantsToProfile, matchSubsidiesToProfile, type ExtendedGrant, type Subsidy, type MatchedGrant, type MatchedSubsidy } from "@/lib/matchingService";
 import { realGrants, realSubsidies } from "@/data/realGrantsData";
+import { TeaserGate, BlurredCard } from "@/components/ui/TeaserGate";
+
+const PUBLIC_PREVIEW_COUNT = 2;
 
 const regions = ["All Regions", "East Midlands", "Derby City", "UK-wide", "England", "Wales", "Midlands"];
 const types = ["All Types", "Energy Efficiency", "Decarbonisation", "Industrial", "Consultancy", "Transport"];
@@ -632,9 +635,12 @@ export default function Grants() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-mint-fresh/5" />
         <div className="container mx-auto px-4 py-16 relative">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Grants & Subsidies</h1>
+            <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">Personalised Matching</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Matched Grants & Funding</h1>
             <p className="text-xl text-muted-foreground">
-              Discover financial support for your sustainability journey - grants, tax relief, and subsidies
+              {profile
+                ? "Grants and subsidies matched to your business profile and readiness status"
+                : "Complete your profile to get personalised grant recommendations based on your industry and location"}
             </p>
           </div>
         </div>
@@ -726,7 +732,26 @@ export default function Grants() {
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
                   </div>
                 ) : filteredGrants.length > 0 ? (
-                  filteredGrants.map(renderGrantCard)
+                  <>
+                    {/* Show all grants for logged-in users, or first 2 for guests */}
+                    {(user ? filteredGrants : filteredGrants.slice(0, PUBLIC_PREVIEW_COUNT)).map(renderGrantCard)}
+
+                    {/* Show blurred preview and CTA for non-logged-in users */}
+                    {!user && filteredGrants.length > PUBLIC_PREVIEW_COUNT && (
+                      <>
+                        {/* Show one blurred card as preview */}
+                        <BlurredCard>
+                          {renderGrantCard(filteredGrants[PUBLIC_PREVIEW_COUNT])}
+                        </BlurredCard>
+
+                        {/* Teaser gate with count */}
+                        <TeaserGate
+                          type="grants"
+                          hiddenCount={filteredGrants.length - PUBLIC_PREVIEW_COUNT}
+                        />
+                      </>
+                    )}
+                  </>
                 ) : (
                   <Card className="text-center py-12">
                     <CardContent>
@@ -795,7 +820,26 @@ export default function Grants() {
                     <Loader2 className="w-8 h-8 animate-spin text-primary" />
                   </div>
                 ) : filteredSubsidies.length > 0 ? (
-                  filteredSubsidies.map(renderSubsidyCard)
+                  <>
+                    {/* Show all subsidies for logged-in users, or first 2 for guests */}
+                    {(user ? filteredSubsidies : filteredSubsidies.slice(0, PUBLIC_PREVIEW_COUNT)).map(renderSubsidyCard)}
+
+                    {/* Show blurred preview and CTA for non-logged-in users */}
+                    {!user && filteredSubsidies.length > PUBLIC_PREVIEW_COUNT && (
+                      <>
+                        {/* Show one blurred card as preview */}
+                        <BlurredCard>
+                          {renderSubsidyCard(filteredSubsidies[PUBLIC_PREVIEW_COUNT])}
+                        </BlurredCard>
+
+                        {/* Teaser gate with count */}
+                        <TeaserGate
+                          type="subsidies"
+                          hiddenCount={filteredSubsidies.length - PUBLIC_PREVIEW_COUNT}
+                        />
+                      </>
+                    )}
+                  </>
                 ) : (
                   <Card className="text-center py-12">
                     <CardContent>
@@ -821,19 +865,19 @@ export default function Grants() {
         <div className="container mx-auto px-4">
           <Card className="max-w-2xl mx-auto text-center">
             <CardHeader>
-              <CardTitle>Not sure where to start?</CardTitle>
+              <CardTitle>Get Better Matches</CardTitle>
               <CardDescription>
-                Take our assessment or calculate your carbon footprint to get personalized recommendations
+                Complete your business profile to receive personalised grant recommendations based on your industry, location, and readiness status
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-4 justify-center">
               <Button asChild>
-                <Link to="/calculator">
-                  Calculate Footprint <ArrowRight className="w-4 h-4 ml-2" />
+                <Link to="/assessment">
+                  Check Your Readiness <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link to="/consultants">Find a Consultant</Link>
+                <Link to="/consultants">Get Application Help</Link>
               </Button>
             </CardContent>
           </Card>

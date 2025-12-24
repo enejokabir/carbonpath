@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Leaf, LogOut, Menu, X, Calculator, Settings } from "lucide-react";
+import { LogOut, Menu, X, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -67,33 +67,50 @@ export const Header = () => {
   };
 
   const navLinkClass = (path: string) => {
-    const base = "text-sm font-medium transition-colors hover:text-primary";
+    const base = "text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm pb-1";
     return isActive(path)
-      ? `${base} text-primary`
+      ? `${base} text-primary border-b-2 border-primary`
       : `${base} text-muted-foreground`;
   };
 
   return (
-    <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-mint-fresh flex items-center justify-center shadow-soft group-hover:shadow-glow transition-all">
-            <Leaf className="w-6 h-6 text-primary-foreground" />
-          </div>
+    <>
+      {/* Skip to content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none"
+      >
+        Skip to main content
+      </a>
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm">
+          <img
+            src="/logo.png"
+            alt="Carbon Path"
+            className="w-10 h-10 object-contain"
+          />
           <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-sage-dark bg-clip-text text-transparent">
             Carbon Path
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-6" role="navigation" aria-label="Main navigation">
+          {/* My Workspace first for logged-in users */}
+          {user && (
+            <Link to="/workspace/dashboard" className={navLinkClass("/workspace")}>
+              My Workspace
+            </Link>
+          )}
+
           {/* Public navigation items */}
-          <Link to="/calculator" className={navLinkClass("/calculator")}>
-            Calculator
+          <Link to="/assessment" className={navLinkClass("/assessment")}>
+            Readiness Check
           </Link>
           <Link to="/grants" className={navLinkClass("/grants")}>
-            Grants & Subsidies
+            Grants
           </Link>
           <Link to="/consultants" className={navLinkClass("/consultants")}>
             Consultants
@@ -104,10 +121,6 @@ export const Header = () => {
 
           {user ? (
             <>
-              <Link to="/dashboard" className={navLinkClass("/dashboard")}>
-                Dashboard
-              </Link>
-
               {isConsultant && (
                 <Link to="/consultant/dashboard" className={navLinkClass("/consultant")}>
                   Consultant Portal
@@ -130,7 +143,7 @@ export const Header = () => {
             </>
           ) : (
             <Button asChild size="sm">
-              <Link to="/assessment">Start Assessment</Link>
+              <Link to="/auth">Sign In</Link>
             </Button>
           )}
         </nav>
@@ -139,34 +152,48 @@ export const Header = () => {
         <Button
           variant="ghost"
           size="sm"
-          className="md:hidden"
+          className="md:hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-navigation"
         >
           {mobileMenuOpen ? (
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           ) : (
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5" aria-hidden="true" />
           )}
         </Button>
       </div>
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-card">
+        <div className="md:hidden border-t border-border bg-card" id="mobile-navigation" role="navigation" aria-label="Mobile navigation">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
+            {/* My Workspace first for logged-in users */}
+            {user && (
+              <Link
+                to="/workspace/dashboard"
+                className={`py-2 px-3 rounded-lg font-medium ${isActive("/workspace") ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                My Workspace
+              </Link>
+            )}
+
             <Link
-              to="/calculator"
-              className={`py-2 px-3 rounded-lg ${isActive("/calculator") ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}
+              to="/assessment"
+              className={`py-2 px-3 rounded-lg ${isActive("/assessment") ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Carbon Calculator
+              Readiness Check
             </Link>
             <Link
               to="/grants"
               className={`py-2 px-3 rounded-lg ${isActive("/grants") ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Grants & Subsidies
+              Grants
             </Link>
             <Link
               to="/consultants"
@@ -185,14 +212,6 @@ export const Header = () => {
 
             {user ? (
               <>
-                <Link
-                  to="/dashboard"
-                  className={`py-2 px-3 rounded-lg ${isActive("/dashboard") ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-
                 {isConsultant && (
                   <Link
                     to="/consultant/dashboard"
@@ -231,8 +250,8 @@ export const Header = () => {
             ) : (
               <div className="pt-2 mt-2 border-t border-border">
                 <Button asChild className="w-full">
-                  <Link to="/assessment" onClick={() => setMobileMenuOpen(false)}>
-                    Start Assessment
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                    Sign In
                   </Link>
                 </Button>
               </div>
@@ -240,6 +259,7 @@ export const Header = () => {
           </nav>
         </div>
       )}
-    </header>
+      </header>
+    </>
   );
 };

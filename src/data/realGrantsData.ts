@@ -550,13 +550,15 @@ export interface DemoConsultant {
   years_experience: number;
 }
 
+// Note: Demo consultants for display purposes
+// Contact via the "Request Intro" button on the platform
 export const demoConsultants: DemoConsultant[] = [
   {
     id: "consultant-1",
     name: "Sarah Mitchell",
     specialty: "Carbon Reporting & Strategy",
     region: "UK-wide (remote)",
-    contact_email: "sarah@carbonpath-demo.com",
+    contact_email: "contact@carbonpath.co.uk",
     contact_phone: null,
     bio: "Former sustainability director at a FTSE 100 company with 15+ years helping SMEs measure, report, and reduce their carbon footprint. Specialist in SECR compliance and science-based targets.",
     expertise_areas: ["carbon_reporting", "strategy", "grant_applications"],
@@ -570,8 +572,8 @@ export const demoConsultants: DemoConsultant[] = [
     name: "James Wilson",
     specialty: "Energy Audits & Retrofit",
     region: "East Midlands",
-    contact_email: "james@carbonpath-demo.com",
-    contact_phone: "+44 115 XXX XXXX",
+    contact_email: "contact@carbonpath.co.uk",
+    contact_phone: null,
     bio: "Certified energy assessor helping manufacturing and industrial businesses reduce energy costs by 20-40%. Expert in heat pumps, solar PV, and building insulation solutions.",
     expertise_areas: ["energy_audits", "retrofit"],
     status: "approved",
@@ -584,7 +586,7 @@ export const demoConsultants: DemoConsultant[] = [
     name: "Emma Thompson",
     specialty: "Grant Applications",
     region: "Midlands",
-    contact_email: "emma@carbonpath-demo.com",
+    contact_email: "contact@carbonpath.co.uk",
     contact_phone: null,
     bio: "Grant writing specialist with an 85% success rate. Helped clients secure over £2.5m in sustainability grants including IETF, Innovate UK, and regional funding schemes.",
     expertise_areas: ["grant_applications", "carbon_reporting"],
@@ -598,8 +600,8 @@ export const demoConsultants: DemoConsultant[] = [
     name: "David Chen",
     specialty: "Tax Relief & Capital Allowances",
     region: "UK-wide",
-    contact_email: "david@carbonpath-demo.com",
-    contact_phone: "+44 20 XXX XXXX",
+    contact_email: "contact@carbonpath.co.uk",
+    contact_phone: null,
     bio: "Chartered accountant specialising in green tax incentives. Helped businesses claim over £5m in R&D tax credits and capital allowances for sustainability investments.",
     expertise_areas: ["tax_specialists"],
     status: "approved",
@@ -610,11 +612,11 @@ export const demoConsultants: DemoConsultant[] = [
   {
     id: "consultant-5",
     name: "Rachel Green",
-    specialty: "Net Zero Strategy",
+    specialty: "Sustainability Strategy",
     region: "London & South East",
-    contact_email: "rachel@carbonpath-demo.com",
+    contact_email: "contact@carbonpath.co.uk",
     contact_phone: null,
-    bio: "Former head of sustainability at a leading retailer. Now helping SMEs develop practical, cost-effective Net Zero roadmaps aligned with the UK's 2050 targets.",
+    bio: "Former head of sustainability at a leading retailer. Now helping SMEs develop practical, cost-effective sustainability roadmaps aligned with UK regulations.",
     expertise_areas: ["strategy", "carbon_reporting", "energy_audits"],
     status: "approved",
     verified: true,
@@ -626,8 +628,8 @@ export const demoConsultants: DemoConsultant[] = [
     name: "Michael O'Brien",
     specialty: "Solar & EV Installation",
     region: "North West",
-    contact_email: "michael@carbonpath-demo.com",
-    contact_phone: "+44 161 XXX XXXX",
+    contact_email: "contact@carbonpath.co.uk",
+    contact_phone: null,
     bio: "MCS-certified renewable energy installer with 10 years experience. Specialises in commercial solar PV, battery storage, and workplace EV charging infrastructure.",
     expertise_areas: ["retrofit", "energy_audits"],
     status: "approved",
@@ -637,23 +639,3 @@ export const demoConsultants: DemoConsultant[] = [
   }
 ];
 
-// Common questions for all industries (Scope 1, 2, and basic Scope 3)
-export const commonEmissionQuestions = {
-  scope1: [
-    { id: "natural_gas_kwh", label: "Natural gas consumption", unit: "kWh", factor: 0.184, description: "Gas for heating and hot water" },
-    { id: "heating_oil_litres", label: "Heating oil", unit: "litres", factor: 2.96, description: "Oil for heating systems" },
-    { id: "company_petrol_litres", label: "Company vehicle petrol", unit: "litres", factor: 2.31, description: "Petrol for owned/leased vehicles" },
-    { id: "company_diesel_litres", label: "Company vehicle diesel", unit: "litres", factor: 2.68, description: "Diesel for owned/leased vehicles" },
-  ],
-  scope2: [
-    { id: "electricity_kwh", label: "Electricity consumption", unit: "kWh", factor: 0.233, description: "Grid electricity usage" },
-  ],
-  scope3: [
-    { id: "employee_commuting_km", label: "Employee commuting", unit: "km/year total", factor: 0.171, description: "Staff travel to work" },
-    { id: "business_travel_km", label: "Business travel by car", unit: "km", factor: 0.171, description: "Client visits, meetings" },
-    { id: "flights_short_haul", label: "Short-haul flights", unit: "flights", factor: 255, description: "UK/Europe flights" },
-    { id: "flights_long_haul", label: "Long-haul flights", unit: "flights", factor: 1950, description: "International flights" },
-    { id: "waste_general_kg", label: "General waste", unit: "kg", factor: 0.446, description: "Non-recycled waste" },
-    { id: "water_m3", label: "Water consumption", unit: "m³", factor: 0.344, description: "Mains water usage" },
-  ]
-};

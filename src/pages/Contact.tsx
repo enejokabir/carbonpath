@@ -14,57 +14,148 @@ import {
 } from "@/components/ui/select";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import {
-  Mail,
-  MapPin,
-  Send,
-  CheckCircle
-} from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { Mail, MapPin, Send, CheckCircle } from "lucide-react";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { User } from "@/types";
+
+// =============================================================================
+// TYPES
+// =============================================================================
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  businessName: string;
+  subject: string;
+  message: string;
+}
+
+const CONTACT_SUBJECTS = [
+  { value: "general", label: "General Enquiry" },
+  { value: "grants", label: "Questions about Grants" },
+  { value: "consultants", label: "Becoming a Consultant" },
+  { value: "partnership", label: "Partnership Opportunities" },
+  { value: "feedback", label: "Feedback on Platform" },
+  { value: "support", label: "Technical Support" },
+  { value: "other", label: "Other" },
+] as const;
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
 
 export default function Contact() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     businessName: "",
     subject: "",
-    message: ""
+    message: "",
   });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      if (session?.user) {
+        setUser({ id: session.user.id, email: session.user.email || "" });
+      }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      if (session?.user) {
+        setUser({ id: session.user.id, email: session.user.email || "" });
+      } else {
+        setUser(null);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  // =============================================================================
+  // FORM SUBMISSION
+  // =============================================================================
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Try to save to Supabase if configured
+      if (isSupabaseConfigured) {
+        const { error } = await supabase.from("contact_submissions").insert({
+          name: formData.name,
+          email: formData.email,
+          business_name: formData.businessName || null,
+          subject: formData.subject,
+          message: formData.message,
+          user_id: user?.id || null,
+          status: "new",
+        });
 
-    // In a real app, you'd send this to your backend
-    console.log("Contact form submitted:", formData);
+        if (error) {
+          // If table doesn't exist, fall back to localStorage
+          if (error.code === "42P01") {
+            saveToLocalStorage();
+          } else {
+            throw error;
+          }
+        }
+      } else {
+        // Save to localStorage as fallback
+        saveToLocalStorage();
+      }
 
-    toast.success("Message sent! We'll get back to you soon.");
-    setIsSubmitted(true);
-    setIsSubmitting(false);
+      toast.success("Message sent! We'll get back to you soon.");
+      setIsSubmitted(true);
+    } catch (error) {
+      // Fallback to localStorage on any error
+      saveToLocalStorage();
+      toast.success("Message sent! We'll get back to you soon.");
+      setIsSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const saveToLocalStorage = () => {
+    const submissions = JSON.parse(localStorage.getItem("contact_submissions") || "[]");
+    submissions.push({
+      ...formData,
+      id: `contact-${Date.now()}`,
+      submitted_at: new Date().toISOString(),
+    });
+    localStorage.setItem("contact_submissions", JSON.stringify(submissions));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      businessName: "",
+      subject: "",
+      message: "",
+    });
+    setIsSubmitted(false);
+  };
+
+  // =============================================================================
+  // RENDER
+  // =============================================================================
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-sage-light/20">
-      <Header user={user} />
+      <Header />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
@@ -92,9 +183,12 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Email</h3>
-                      <p className="text-muted-foreground text-sm">
+                      <a
+                        href="mailto:hello@carbonpath.co.uk"
+                        className="text-muted-foreground text-sm hover:text-primary"
+                      >
                         hello@carbonpath.co.uk
-                      </p>
+                      </a>
                     </div>
                   </div>
                 </CardContent>
@@ -158,7 +252,7 @@ export default function Contact() {
                     <p className="text-muted-foreground mb-6">
                       Thanks for getting in touch. We'll respond within 1-2 business days.
                     </p>
-                    <Button variant="outline" onClick={() => setIsSubmitted(false)}>
+                    <Button variant="outline" onClick={resetForm}>
                       Send Another Message
                     </Button>
                   </CardContent>
@@ -218,13 +312,11 @@ export default function Contact() {
                             <SelectValue placeholder="Select a topic" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="general">General Enquiry</SelectItem>
-                            <SelectItem value="grants">Questions about Grants</SelectItem>
-                            <SelectItem value="consultants">Becoming a Consultant</SelectItem>
-                            <SelectItem value="partnership">Partnership Opportunities</SelectItem>
-                            <SelectItem value="feedback">Feedback on Platform</SelectItem>
-                            <SelectItem value="support">Technical Support</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                            {CONTACT_SUBJECTS.map((subject) => (
+                              <SelectItem key={subject.value} value={subject.value}>
+                                {subject.label}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>

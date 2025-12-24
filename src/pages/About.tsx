@@ -40,7 +40,7 @@ export default function About() {
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">About Carbon Path</h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              We're building the platform we wished existed when we started helping SMEs with sustainability—a single place to understand Net Zero, find funding, and connect with trusted experts.
+              We're building the platform we wished existed when we started helping SMEs with sustainability—a single place to organise compliance evidence, find funding, and connect with trusted experts.
             </p>
           </div>
         </div>
@@ -57,7 +57,7 @@ export default function About() {
               <h2 className="text-2xl font-bold">Our Mission</h2>
             </div>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-              SMEs make up 99% of UK businesses, yet most don't know where to start with Net Zero. Information is scattered across government websites, industry bodies, and consultants. Funding opportunities come and go. Finding trustworthy help is difficult.
+              SMEs make up 99% of UK businesses, yet most don't know where to start with sustainability compliance. Evidence is scattered across emails and spreadsheets. Funding opportunities come and go. Finding trustworthy help is difficult.
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed mb-6">
               <strong className="text-foreground">Carbon Path exists to change that.</strong> We're creating a single platform where any UK SME can:
@@ -67,7 +67,7 @@ export default function About() {
                 <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-primary font-bold text-sm">1</span>
                 </span>
-                <span><strong>Learn</strong> what Net Zero means for their business—in plain English, without jargon</span>
+                <span><strong>Learn</strong> what sustainability compliance means for their business—in plain English, without jargon</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">

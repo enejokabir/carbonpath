@@ -131,6 +131,9 @@ export type Database = {
           id: string
           location: string | null
           updated_at: string
+          current_workspace_id: string | null
+          full_name: string | null
+          email: string | null
         }
         Insert: {
           business_name: string
@@ -140,6 +143,9 @@ export type Database = {
           id: string
           location?: string | null
           updated_at?: string
+          current_workspace_id?: string | null
+          full_name?: string | null
+          email?: string | null
         }
         Update: {
           business_name?: string
@@ -149,8 +155,19 @@ export type Database = {
           id?: string
           location?: string | null
           updated_at?: string
+          current_workspace_id?: string | null
+          full_name?: string | null
+          email?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_current_workspace_id_fkey"
+            columns: ["current_workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       questionnaire_answers: {
         Row: {
@@ -244,6 +261,311 @@ export type Database = {
         }
         Relationships: []
       }
+      workspaces: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          industry: Database["public"]["Enums"]["business_type"]
+          employee_count: number | null
+          location: string | null
+          postcode: string | null
+          website: string | null
+          description: string | null
+          onboarding_completed: boolean
+          onboarding_step: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          industry: Database["public"]["Enums"]["business_type"]
+          employee_count?: number | null
+          location?: string | null
+          postcode?: string | null
+          website?: string | null
+          description?: string | null
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          industry?: Database["public"]["Enums"]["business_type"]
+          employee_count?: number | null
+          location?: string | null
+          postcode?: string | null
+          website?: string | null
+          description?: string | null
+          onboarding_completed?: boolean
+          onboarding_step?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      workspace_members: {
+        Row: {
+          id: string
+          workspace_id: string
+          user_id: string
+          role: Database["public"]["Enums"]["workspace_role"]
+          invited_by: string | null
+          invited_at: string | null
+          joined_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          user_id: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          invited_by?: string | null
+          invited_at?: string | null
+          joined_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          user_id?: string
+          role?: Database["public"]["Enums"]["workspace_role"]
+          invited_by?: string | null
+          invited_at?: string | null
+          joined_at?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_members_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      evidence_items: {
+        Row: {
+          id: string
+          workspace_id: string
+          category: Database["public"]["Enums"]["evidence_category"]
+          title: string
+          description: string | null
+          file_path: string | null
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
+          document_date: string | null
+          valid_from: string | null
+          valid_until: string | null
+          review_date: string | null
+          status: Database["public"]["Enums"]["evidence_status"]
+          last_reviewed_at: string | null
+          last_reviewed_by: string | null
+          uploaded_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          category: Database["public"]["Enums"]["evidence_category"]
+          title: string
+          description?: string | null
+          file_path?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          document_date?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
+          review_date?: string | null
+          status?: Database["public"]["Enums"]["evidence_status"]
+          last_reviewed_at?: string | null
+          last_reviewed_by?: string | null
+          uploaded_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          category?: Database["public"]["Enums"]["evidence_category"]
+          title?: string
+          description?: string | null
+          file_path?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          document_date?: string | null
+          valid_from?: string | null
+          valid_until?: string | null
+          review_date?: string | null
+          status?: Database["public"]["Enums"]["evidence_status"]
+          last_reviewed_at?: string | null
+          last_reviewed_by?: string | null
+          uploaded_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_items_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      obligations: {
+        Row: {
+          id: string
+          workspace_id: string
+          title: string
+          description: string | null
+          category: Database["public"]["Enums"]["evidence_category"] | null
+          frequency: Database["public"]["Enums"]["obligation_frequency"]
+          due_date: string
+          reminder_days: number
+          is_recurring: boolean
+          recurrence_end_date: string | null
+          is_completed: boolean
+          completed_at: string | null
+          completed_by: string | null
+          linked_evidence_id: string | null
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          title: string
+          description?: string | null
+          category?: Database["public"]["Enums"]["evidence_category"] | null
+          frequency: Database["public"]["Enums"]["obligation_frequency"]
+          due_date: string
+          reminder_days?: number
+          is_recurring?: boolean
+          recurrence_end_date?: string | null
+          is_completed?: boolean
+          completed_at?: string | null
+          completed_by?: string | null
+          linked_evidence_id?: string | null
+          created_by: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          title?: string
+          description?: string | null
+          category?: Database["public"]["Enums"]["evidence_category"] | null
+          frequency?: Database["public"]["Enums"]["obligation_frequency"]
+          due_date?: string
+          reminder_days?: number
+          is_recurring?: boolean
+          recurrence_end_date?: string | null
+          is_completed?: boolean
+          completed_at?: string | null
+          completed_by?: string | null
+          linked_evidence_id?: string | null
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obligations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      readiness_scores: {
+        Row: {
+          id: string
+          workspace_id: string
+          overall_score: number | null
+          evidence_score: number | null
+          freshness_score: number | null
+          checklist_score: number | null
+          obligations_score: number | null
+          total_evidence_items: number
+          current_evidence_items: number
+          expiring_evidence_items: number
+          expired_evidence_items: number
+          total_obligations: number
+          overdue_obligations: number
+          upcoming_obligations: number
+          total_checklist_items: number
+          completed_checklist_items: number
+          calculated_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          overall_score?: number | null
+          evidence_score?: number | null
+          freshness_score?: number | null
+          checklist_score?: number | null
+          obligations_score?: number | null
+          total_evidence_items?: number
+          current_evidence_items?: number
+          expiring_evidence_items?: number
+          expired_evidence_items?: number
+          total_obligations?: number
+          overdue_obligations?: number
+          upcoming_obligations?: number
+          total_checklist_items?: number
+          completed_checklist_items?: number
+          calculated_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          workspace_id?: string
+          overall_score?: number | null
+          evidence_score?: number | null
+          freshness_score?: number | null
+          checklist_score?: number | null
+          obligations_score?: number | null
+          total_evidence_items?: number
+          current_evidence_items?: number
+          expiring_evidence_items?: number
+          expired_evidence_items?: number
+          total_obligations?: number
+          overdue_obligations?: number
+          upcoming_obligations?: number
+          total_checklist_items?: number
+          completed_checklist_items?: number
+          calculated_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "readiness_scores_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -270,6 +592,20 @@ export type Database = {
         | "agriculture"
         | "other"
       score_category: "good" | "average" | "needs_improvement"
+      workspace_role: "owner" | "manager" | "member" | "viewer"
+      evidence_category:
+        | "environmental_policy"
+        | "energy_management"
+        | "waste_management"
+        | "supply_chain"
+        | "transport_logistics"
+        | "certifications"
+        | "training_records"
+        | "utility_bills"
+        | "audit_reports"
+        | "other"
+      obligation_frequency: "one_time" | "monthly" | "quarterly" | "annually" | "biannually"
+      evidence_status: "current" | "expiring_soon" | "expired" | "needs_review"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -410,6 +746,21 @@ export const Constants = {
         "other",
       ],
       score_category: ["good", "average", "needs_improvement"],
+      workspace_role: ["owner", "manager", "member", "viewer"],
+      evidence_category: [
+        "environmental_policy",
+        "energy_management",
+        "waste_management",
+        "supply_chain",
+        "transport_logistics",
+        "certifications",
+        "training_records",
+        "utility_bills",
+        "audit_reports",
+        "other",
+      ],
+      obligation_frequency: ["one_time", "monthly", "quarterly", "annually", "biannually"],
+      evidence_status: ["current", "expiring_soon", "expired", "needs_review"],
     },
   },
 } as const

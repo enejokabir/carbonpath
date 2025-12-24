@@ -16,15 +16,11 @@ import {
   Briefcase,
   BookOpen,
   ClipboardList,
-  Bookmark,
   ChevronRight,
-  RefreshCw,
-  Leaf,
-  Calculator,
-  TrendingDown,
   Coins,
   MessageSquare,
   Loader2,
+  ClipboardCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { matchGrantsToProfile, matchSubsidiesToProfile, matchConsultantsToNeeds, getRecommendedConsultantTypes } from "@/lib/matchingService";
@@ -35,8 +31,6 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<any>(null);
   const [assessmentData, setAssessmentData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [carbonScore, setCarbonScore] = useState<any>(null);
-  const [latestFootprint, setLatestFootprint] = useState<any>(null);
   const [introRequests, setIntroRequests] = useState<any[]>([]);
   const [recommendedGrants, setRecommendedGrants] = useState<ExtendedGrant[]>([]);
   const [recommendedSubsidies, setRecommendedSubsidies] = useState<Subsidy[]>([]);
@@ -65,30 +59,6 @@ export default function Dashboard() {
         toast.error("Error loading profile: " + profileError.message);
       } else {
         setProfile(profileData);
-      }
-
-      // Fetch carbon score
-      const { data: scoreData } = await supabase
-        .from('carbon_scores')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single();
-
-      if (scoreData) {
-        setCarbonScore(scoreData);
-      }
-
-      // Fetch latest carbon footprint
-      const { data: footprintData } = await supabase
-        .from('carbon_footprints')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('calculation_date', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (footprintData) {
-        setLatestFootprint(footprintData);
       }
 
       // Fetch introduction requests
@@ -169,28 +139,6 @@ export default function Dashboard() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-emerald-500';
-      case 'average': return 'text-amber-500';
-      case 'needs_improvement': return 'text-orange-500';
-      case 'poor': return 'text-red-500';
-      default: return 'text-muted-foreground';
-    }
-  };
-
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'excellent': return 'Excellent';
-      case 'good': return 'Good';
-      case 'average': return 'Average';
-      case 'needs_improvement': return 'Needs Improvement';
-      case 'poor': return 'Poor';
-      default: return 'Not calculated';
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-sage-light/20">
@@ -217,94 +165,76 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Top Row: Carbon Score + Profile */}
+        {/* Top Row: Getting Started + Profile */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          {/* Carbon Footprint Card */}
+          {/* Getting Started Card */}
           <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Leaf className="w-6 h-6 text-primary" />
+                    <ClipboardCheck className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl">Your Carbon Footprint</CardTitle>
+                    <CardTitle className="text-xl">Your Sustainability Journey</CardTitle>
                     <CardDescription>
-                      {latestFootprint
-                        ? `Last calculated: ${new Date(latestFootprint.calculation_date).toLocaleDateString("en-GB")}`
-                        : "Start tracking your emissions"}
+                      {assessmentData ? "Your personalized recommendations are ready" : "Get started with your readiness check"}
                     </CardDescription>
                   </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              {latestFootprint ? (
+              {assessmentData ? (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-bold">
-                        {(latestFootprint.total_kg_co2e / 1000).toFixed(1)}
-                        <span className="text-lg font-normal text-muted-foreground ml-1">tCO2e</span>
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {latestFootprint.kg_co2e_per_employee?.toFixed(0)} kg per employee
-                      </p>
-                    </div>
-                    {carbonScore && (
-                      <div className="text-right">
-                        <p className={`text-2xl font-bold ${getCategoryColor(carbonScore.category)}`}>
-                          {carbonScore.score}/100
-                        </p>
-                        <p className={`text-sm ${getCategoryColor(carbonScore.category)}`}>
-                          {getCategoryLabel(carbonScore.category)}
-                        </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border">
+                      <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                        <ClipboardCheck className="w-4 h-4 text-green-600" />
                       </div>
-                    )}
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">Readiness Check</p>
+                        <p className="text-xs text-muted-foreground">Completed</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <PoundSterling className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">Browse Matching Grants</p>
+                        <p className="text-xs text-muted-foreground">Find funding opportunities</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Users className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">Connect with Experts</p>
+                        <p className="text-xs text-muted-foreground">Get professional support</p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </div>
                   </div>
-
-                  {carbonScore && (
-                    <Progress value={carbonScore.score} className="h-2" />
-                  )}
-
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="p-2 bg-background/50 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Scope 1</p>
-                      <p className="font-semibold text-sm">
-                        {((latestFootprint.scope1_total_kg_co2e || 0) / 1000).toFixed(1)}t
-                      </p>
-                    </div>
-                    <div className="p-2 bg-background/50 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Scope 2</p>
-                      <p className="font-semibold text-sm">
-                        {((latestFootprint.scope2_total_kg_co2e || 0) / 1000).toFixed(1)}t
-                      </p>
-                    </div>
-                    <div className="p-2 bg-background/50 rounded-lg">
-                      <p className="text-xs text-muted-foreground">Scope 3</p>
-                      <p className="font-semibold text-sm">
-                        {((latestFootprint.scope3_total_kg_co2e || 0) / 1000).toFixed(1)}t
-                      </p>
-                    </div>
-                  </div>
-
                   <Button asChild className="w-full">
-                    <Link to="/calculator">
-                      <Calculator className="w-4 h-4 mr-2" />
-                      Update Calculation
+                    <Link to="/workspace/dashboard">
+                      Go to My Workspace
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <TrendingDown className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+                  <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
                   <p className="text-muted-foreground mb-4">
-                    Calculate your carbon footprint to get personalized recommendations
+                    Complete your readiness check to get personalized grant matches and consultant recommendations
                   </p>
                   <Button asChild>
-                    <Link to="/calculator">
-                      <Calculator className="w-4 h-4 mr-2" />
-                      Start Calculator
+                    <Link to="/assessment">
+                      <ClipboardCheck className="w-4 h-4 mr-2" />
+                      Start Readiness Check
                     </Link>
                   </Button>
                 </div>
@@ -600,9 +530,9 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-4">
           <Button asChild>
-            <Link to="/calculator">
+            <Link to="/assessment">
               <Calculator className="w-4 h-4 mr-2" />
-              Carbon Calculator
+              Readiness Check
             </Link>
           </Button>
           <Button variant="outline" asChild>

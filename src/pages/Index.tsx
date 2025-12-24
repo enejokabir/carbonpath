@@ -7,7 +7,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import {
   ArrowRight,
-  BookOpen,
   PoundSterling,
   Users,
   HelpCircle,
@@ -17,10 +16,8 @@ import {
   Briefcase,
   Cpu,
   ChevronRight,
-  Leaf,
   Target,
   Award,
-  Calculator,
   BarChart3,
   Shield,
   Zap
@@ -50,6 +47,7 @@ export default function Index() {
     <div className="min-h-screen bg-gradient-to-b from-background to-sage-light/20">
       <Header user={user} />
 
+      <main id="main-content">
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
         {/* Animated background elements */}
@@ -87,17 +85,17 @@ export default function Index() {
                 transition={{ type: "spring", duration: 0.8 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary mb-4"
               >
-                <Calculator className="w-4 h-4" />
-                <span className="text-sm font-medium">Free Carbon Footprint Calculator</span>
+                <Shield className="w-4 h-4" />
+                <span className="text-sm font-medium">SME Compliance Readiness Workspace</span>
               </motion.div>
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
-                Helping UK SMEs navigate{" "}
-                <span className="relative">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="block">Be Sustainability Ready</span>
+                <span className="relative inline-block">
                   <span className="bg-gradient-to-r from-primary via-sage-dark to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-                    Net Zero
+                    In Practice, Not Just Theory
                   </span>
                   <motion.span
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary to-sage rounded-full"
@@ -111,7 +109,7 @@ export default function Index() {
 
             <FadeIn delay={0.2}>
               <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-                Calculate your carbon footprint. Access grants & tax benefits. Connect with trusted experts.
+                Organise evidence. Track obligations. Access matched grants. Connect with vetted consultants.
               </p>
             </FadeIn>
 
@@ -119,9 +117,9 @@ export default function Index() {
               <div className="flex flex-wrap gap-4 justify-center pt-6">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
                   <Button size="lg" asChild className="shadow-glow text-base px-8 py-6 text-lg group">
-                    <Link to="/calculator">
-                      <Calculator className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
-                      Calculate Your Footprint
+                    <Link to="/assessment">
+                      <Target className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
+                      Check Your Readiness
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Button>
@@ -129,7 +127,7 @@ export default function Index() {
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button size="lg" variant="outline" asChild className="text-base px-8 py-6 text-lg">
                     <Link to="/grants">
-                      Explore Grants <ChevronRight className="ml-1 w-5 h-5" />
+                      Find Matched Grants <ChevronRight className="ml-1 w-5 h-5" />
                     </Link>
                   </Button>
                 </motion.div>
@@ -138,24 +136,24 @@ export default function Index() {
 
             {/* Stats */}
             <FadeIn delay={0.5}>
-              <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-12">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto pt-12">
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
                     <AnimatedCounter value={50} suffix="+" duration={1.5} />
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Grants Available</p>
+                  <p className="text-sm text-muted-foreground mt-1">Matched Grants</p>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
-                    <AnimatedCounter value={5} prefix="£" suffix="B+" duration={1.5} />
+                    <AnimatedCounter value={20} suffix="+" duration={1.5} />
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">In Funding</p>
+                  <p className="text-sm text-muted-foreground mt-1">Vetted Consultants</p>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl md:text-4xl font-bold text-primary">
-                    <AnimatedCounter value={100} suffix="%" duration={1.5} />
+                    <AnimatedCounter value={5} suffix=" min" duration={1.5} />
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">Free to Use</p>
+                  <p className="text-sm text-muted-foreground mt-1">Readiness Check</p>
                 </div>
               </div>
             </FadeIn>
@@ -189,7 +187,7 @@ export default function Index() {
           <SlideIn direction="up">
             <div className="max-w-4xl mx-auto text-center space-y-10">
               <p className="text-lg md:text-xl text-muted-foreground italic border-l-4 border-primary pl-6 text-left max-w-2xl mx-auto">
-                "SMEs are 99% of UK businesses but most don't know where to start with Net Zero — or what financial support is available"
+                "SMEs don't fail because they're unwilling to act on sustainability. They fail because requirements arrive before they're operationally prepared."
               </p>
 
               <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -200,12 +198,12 @@ export default function Index() {
                   >
                     <motion.div
                       whileHover={{ rotate: 15 }}
-                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center mb-4"
+                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-destructive/20 to-destructive/10 flex items-center justify-center mb-4"
                     >
-                      <HelpCircle className="w-8 h-8 text-red-500" />
+                      <HelpCircle className="w-8 h-8 text-destructive" />
                     </motion.div>
-                    <p className="font-semibold text-center text-lg">Confused by policy & regulations</p>
-                    <p className="text-sm text-muted-foreground mt-2 text-center">Complex rules that change frequently</p>
+                    <p className="font-semibold text-center text-lg">Evidence is fragmented</p>
+                    <p className="text-sm text-muted-foreground mt-2 text-center">Documents scattered across emails, spreadsheets, and staff</p>
                   </motion.div>
                 </StaggerItem>
 
@@ -216,12 +214,12 @@ export default function Index() {
                   >
                     <motion.div
                       whileHover={{ rotate: 15 }}
-                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center mb-4"
+                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-earth-warm/30 to-earth-warm/10 flex items-center justify-center mb-4"
                     >
-                      <PoundSterling className="w-8 h-8 text-amber-600" />
+                      <PoundSterling className="w-8 h-8 text-earth-warm" />
                     </motion.div>
-                    <p className="font-semibold text-center text-lg">Missing out on grants</p>
-                    <p className="text-sm text-muted-foreground mt-2 text-center">Billions in funding goes unclaimed</p>
+                    <p className="font-semibold text-center text-lg">No readiness system</p>
+                    <p className="text-sm text-muted-foreground mt-2 text-center">No clear view of what's in place, missing, or outdated</p>
                   </motion.div>
                 </StaggerItem>
 
@@ -232,12 +230,12 @@ export default function Index() {
                   >
                     <motion.div
                       whileHover={{ rotate: 15 }}
-                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center mb-4"
+                      className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sage/20 to-sage/10 flex items-center justify-center mb-4"
                     >
-                      <Users className="w-8 h-8 text-blue-500" />
+                      <Users className="w-8 h-8 text-sage-dark" />
                     </motion.div>
-                    <p className="font-semibold text-center text-lg">Don't know who to trust</p>
-                    <p className="text-sm text-muted-foreground mt-2 text-center">Too many consultants, no validation</p>
+                    <p className="font-semibold text-center text-lg">Help is reactive & costly</p>
+                    <p className="text-sm text-muted-foreground mt-2 text-center">Consultants sought only when deadlines loom</p>
                   </motion.div>
                 </StaggerItem>
               </StaggerContainer>
@@ -246,7 +244,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Carbon Calculator CTA Section */}
+      {/* Readiness Assessment Section */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-sage/5" />
         <Floating>
@@ -263,18 +261,18 @@ export default function Index() {
                     Takes just 5 minutes
                   </div>
                   <h2 className="text-3xl md:text-4xl font-bold">
-                    Know Your Carbon Footprint
+                    Check Your Sustainability Readiness
                   </h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Our intelligent calculator adapts to your industry, asking only relevant questions to give you an accurate picture of your emissions.
+                    Answer one simple question: "If asked for sustainability evidence today, how ready are you?" Our assessment shows you exactly where you stand.
                   </p>
 
                   <ul className="space-y-4">
                     {[
-                      { icon: Target, text: "Industry-specific calculations" },
-                      { icon: BarChart3, text: "Benchmark against your sector" },
-                      { icon: Award, text: "Get personalized recommendations" },
-                      { icon: Shield, text: "SECR & UK reporting compliant" },
+                      { icon: Target, text: "Industry-specific compliance checklist" },
+                      { icon: BarChart3, text: "Clear readiness score dashboard" },
+                      { icon: Award, text: "Matched grants based on your profile" },
+                      { icon: Shield, text: "Evidence organisation system" },
                     ].map((item, i) => (
                       <motion.li
                         key={i}
@@ -294,9 +292,9 @@ export default function Index() {
 
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button size="lg" asChild className="shadow-glow mt-4">
-                      <Link to="/calculator">
-                        <Calculator className="mr-2 w-5 h-5" />
-                        Start Free Calculator
+                      <Link to="/assessment">
+                        <Target className="mr-2 w-5 h-5" />
+                        Start Readiness Check
                         <ArrowRight className="ml-2 w-5 h-5" />
                       </Link>
                     </Button>
@@ -310,15 +308,15 @@ export default function Index() {
                   className="relative"
                 >
                   <div className="bg-gradient-to-br from-card to-card/80 rounded-3xl border-2 border-primary/20 p-8 shadow-elevated">
-                    {/* Mock calculator preview */}
+                    {/* Mock readiness preview */}
                     <div className="space-y-6">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-sage-dark flex items-center justify-center">
-                          <Leaf className="w-6 h-6 text-white" />
+                          <Shield className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                          <p className="font-semibold">Your Carbon Score</p>
-                          <p className="text-sm text-muted-foreground">Based on your inputs</p>
+                          <p className="font-semibold">Your Readiness Score</p>
+                          <p className="text-sm text-muted-foreground">Based on your profile</p>
                         </div>
                       </div>
 
@@ -330,17 +328,17 @@ export default function Index() {
                           viewport={{ once: true }}
                           className="text-6xl font-bold text-primary"
                         >
-                          <AnimatedCounter value={42.5} decimals={1} duration={2} />
-                          <span className="text-2xl ml-1">t</span>
+                          <AnimatedCounter value={72} duration={2} />
+                          <span className="text-2xl ml-1">%</span>
                         </motion.div>
-                        <p className="text-muted-foreground mt-2">tonnes CO2e / year</p>
+                        <p className="text-muted-foreground mt-2">Compliance Ready</p>
                       </div>
 
                       <div className="space-y-3">
                         {[
-                          { label: "Scope 1 - Direct", value: 35, color: "bg-primary" },
-                          { label: "Scope 2 - Energy", value: 45, color: "bg-sage" },
-                          { label: "Scope 3 - Indirect", value: 20, color: "bg-mint-fresh" },
+                          { label: "Evidence Organised", value: 80, color: "bg-primary" },
+                          { label: "Obligations Tracked", value: 65, color: "bg-sage" },
+                          { label: "Documents Current", value: 70, color: "bg-mint-fresh" },
                         ].map((scope, i) => (
                           <div key={i} className="space-y-1">
                             <div className="flex justify-between text-sm">
@@ -380,9 +378,9 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <FadeIn>
             <div className="text-center mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold">How Carbon Path Helps</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">Your Compliance Readiness Workspace</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Your one-stop platform for Net Zero guidance, funding, and expert support
+                Organise, track, and respond to sustainability requirements with confidence
               </p>
             </div>
           </FadeIn>
@@ -397,17 +395,17 @@ export default function Index() {
                       transition={{ duration: 0.5 }}
                       className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-sage-dark flex items-center justify-center shadow-soft"
                     >
-                      <BookOpen className="w-8 h-8 text-primary-foreground" />
+                      <Shield className="w-8 h-8 text-primary-foreground" />
                     </motion.div>
-                    <CardTitle className="text-2xl">Learn</CardTitle>
+                    <CardTitle className="text-2xl">Organise</CardTitle>
                     <CardDescription className="text-base leading-relaxed">
-                      Understand Net Zero, UK policy & what it means for your business. Plain English, no jargon.
+                      Store policies, bills, logs and records in one place. Time-stamped, structured, always ready.
                     </CardDescription>
                     <Link
-                      to="/learn"
+                      to="/assessment"
                       className="inline-flex items-center text-primary font-medium hover:underline group-hover:gap-2 gap-1 transition-all"
                     >
-                      Explore the Hub <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      Start Assessment <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </CardHeader>
                 </Card>
@@ -425,15 +423,15 @@ export default function Index() {
                     >
                       <PoundSterling className="w-8 h-8 text-primary-foreground" />
                     </motion.div>
-                    <CardTitle className="text-2xl">Fund</CardTitle>
+                    <CardTitle className="text-2xl">Match</CardTitle>
                     <CardDescription className="text-base leading-relaxed">
-                      Discover grants, tax incentives & financial benefits available for sustainability investments.
+                      Get personalised grant recommendations based on your profile and readiness status.
                     </CardDescription>
                     <Link
                       to="/grants"
                       className="inline-flex items-center text-primary font-medium hover:underline group-hover:gap-2 gap-1 transition-all"
                     >
-                      View Grants <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      Find Grants <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </CardHeader>
                 </Card>
@@ -453,7 +451,7 @@ export default function Index() {
                     </motion.div>
                     <CardTitle className="text-2xl">Connect</CardTitle>
                     <CardDescription className="text-base leading-relaxed">
-                      Find trusted consultants to guide you through applications & next steps.
+                      Access vetted consultants for tax, grants, and full compliance support when you need it.
                     </CardDescription>
                     <Link
                       to="/consultants"
@@ -474,9 +472,9 @@ export default function Index() {
         <div className="container mx-auto px-4">
           <FadeIn>
             <div className="text-center mb-16 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold">Who This Is For</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">Built for UK SMEs</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Carbon Path is for UK SMEs who want to take action on sustainability but don't know where to start
+                For businesses that need to demonstrate sustainability to win contracts, access grants, and satisfy supply chain requirements
               </p>
             </div>
           </FadeIn>
@@ -536,15 +534,15 @@ export default function Index() {
                 viewport={{ once: true }}
                 className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-sage-dark flex items-center justify-center mx-auto shadow-glow"
               >
-                <Leaf className="w-10 h-10 text-white" />
+                <Shield className="w-10 h-10 text-white" />
               </motion.div>
 
               <h2 className="text-3xl md:text-4xl font-bold">
-                Ready to Start Your Net Zero Journey?
+                Ready to Be Compliance Ready?
               </h2>
 
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Join hundreds of UK SMEs who are already using Carbon Path to understand their impact and access the support they need.
+                Stop scrambling when sustainability requests arrive. Get your workspace set up and be ready to respond with confidence.
               </p>
 
               <motion.div
@@ -553,21 +551,22 @@ export default function Index() {
                 className="inline-block"
               >
                 <Button size="lg" asChild className="shadow-glow text-lg px-10 py-6">
-                  <Link to="/calculator">
-                    <Calculator className="mr-2 w-5 h-5" />
-                    Calculate Your Footprint
+                  <Link to="/assessment">
+                    <Target className="mr-2 w-5 h-5" />
+                    Check Your Readiness
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
               </motion.div>
 
               <p className="text-sm text-muted-foreground">
-                Free to use • No credit card required • Results in 5 minutes
+                Free assessment • No credit card required • Results in 5 minutes
               </p>
             </div>
           </ScaleIn>
         </div>
       </section>
+      </main>
 
       <Footer />
     </div>

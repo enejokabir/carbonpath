@@ -11,10 +11,11 @@ import {
   BookOpen,
   ChevronRight
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
+import { articlesContent, getRelatedArticles } from "@/data/articlesData";
 
-// Article content database
-const articlesContent: Record<string, {
+// Legacy article content - kept for backwards compatibility
+const legacyArticlesContent: Record<string, {
   title: string;
   category: string;
   readTime: string;
@@ -864,7 +865,10 @@ export default function LearnArticle() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const article = slug ? articlesContent[slug] : null;
+  // Check new articles first, then fall back to legacy content
+  const article = slug
+    ? (articlesContent[slug] || legacyArticlesContent[slug])
+    : null;
 
   if (!article) {
     return (

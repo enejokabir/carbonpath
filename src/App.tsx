@@ -19,10 +19,17 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
-// New pages
-import CarbonCalculator from "./pages/CarbonCalculator";
+// Consultant pages
 import ConsultantRegister from "./pages/ConsultantRegister";
 import ConsultantDashboard from "./pages/ConsultantDashboard";
+
+// Workspace pages
+import OnboardingFlow from "./pages/onboarding/OnboardingFlow";
+import WorkspaceDashboard from "./pages/workspace/WorkspaceDashboard";
+import EvidenceLocker from "./pages/workspace/EvidenceLocker";
+import ComplianceCalendar from "./pages/workspace/ComplianceCalendar";
+import WorkspaceSettings from "./pages/workspace/WorkspaceSettings";
+import Checklist from "./pages/workspace/Checklist";
 
 // Admin pages
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -51,11 +58,18 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tax-benefits" element={<TaxBenefits />} />
-          <Route path="/calculator" element={<CarbonCalculator />} />
 
           {/* Protected Routes */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile/edit" element={<ProfileEdit />} />
+
+          {/* Workspace Routes */}
+          <Route path="/onboarding" element={<OnboardingFlow />} />
+          <Route path="/workspace/dashboard" element={<WorkspaceDashboard />} />
+          <Route path="/workspace/checklist" element={<Checklist />} />
+          <Route path="/workspace/evidence" element={<EvidenceLocker />} />
+          <Route path="/workspace/calendar" element={<ComplianceCalendar />} />
+          <Route path="/workspace/settings" element={<WorkspaceSettings />} />
 
           {/* Consultant Routes */}
           <Route path="/consultant/register" element={<ConsultantRegister />} />
